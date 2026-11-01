@@ -1,0 +1,235 @@
+<!--
+Copyright 2026 Rohith Ashok
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <link rel="stylesheet" href="./themes.css" />
+        <title>CALM Viewer — Architecture, at a glance</title>
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                margin: 0;
+                background: #edf2ee;
+                color: #203f47;
+                font:
+                    15px/1.6 system-ui,
+                    sans-serif;
+            }
+            .wrap {
+                max-width: 1500px;
+                margin: auto;
+                padding: 35px 5vw;
+            }
+            header {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                border-bottom: 1px solid #cfdbd5;
+                padding-bottom: 22px;
+            }
+            .logo {
+                width: 34px;
+                height: 34px;
+                border-radius: 10px;
+                background: #167b74;
+                color: white;
+                display: grid;
+                place-items: center;
+                font-size: 23px;
+            }
+            header strong {
+                font-size: 17px;
+            }
+            header span:last-child {
+                margin-left: auto;
+                color: #627a70;
+                font-size: 12px;
+            }
+            .intro {
+                display: flex;
+                align-items: end;
+                justify-content: space-between;
+                gap: 30px;
+                margin: 40px 0 25px;
+            }
+            .kicker {
+                text-transform: uppercase;
+                letter-spacing: 0.18em;
+                font-size: 11px;
+                color: #42786a;
+            }
+            h1 {
+                font-size: clamp(28px, 3.5vw, 45px);
+                font-weight: 550;
+                letter-spacing: -0.045em;
+                margin: 8px 0;
+            }
+            p {
+                margin: 0;
+                color: #5b756d;
+                max-width: 650px;
+            }
+            .examples {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+                justify-content: flex-end;
+            }
+            .theme-picker {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 12px;
+                color: #42786a;
+            }
+            .theme-picker select {
+                font: inherit;
+                padding: 9px;
+                border: 1px solid #9dbab0;
+                border-radius: 8px;
+                background: white;
+                color: #22685b;
+            }
+            .sample {
+                background: transparent;
+                border: 1px solid #9dbab0;
+                border-radius: 8px;
+                padding: 10px 16px;
+                color: #22685b;
+                cursor: pointer;
+                white-space: nowrap;
+            }
+            .demo-guide {
+                max-width: none;
+                margin: 0 0 16px;
+                font-size: 13px;
+            }
+            calm-viewer {
+                height: 650px;
+                box-shadow: 0 15px 45px #203f4709;
+            }
+            footer {
+                display: flex;
+                justify-content: space-between;
+                gap: 20px;
+                font-size: 12px;
+                color: #6c8077;
+                margin-top: 20px;
+            }
+            code {
+                color: #236e60;
+            }
+            @media (max-width: 650px) {
+                .wrap {
+                    padding: 20px;
+                }
+                .intro {
+                    display: block;
+                }
+                .sample {
+                    margin-top: 15px;
+                }
+                header span:last-child {
+                    display: none;
+                }
+                calm-viewer {
+                    height: 740px;
+                }
+                footer {
+                    display: block;
+                }
+                footer span {
+                    display: block;
+                    margin-top: 8px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrap">
+            <header>
+                <div class="logo" aria-hidden="true">⌘</div>
+                <strong>CALM / Viewer</strong
+                ><span>A small window into your architecture</span>
+            </header>
+            <main>
+                <div class="intro">
+                    <div>
+                        <div class="kicker">
+                            Architecture as code, made visible
+                        </div>
+                        <h1>See how it all connects.</h1>
+                        <p>
+                            Explore your CALM architecture. Follow
+                            relationships, inspect components, and arrange the
+                            picture to suit the conversation.
+                        </p>
+                    </div>
+                    <div class="examples">
+                        <label class="theme-picker"
+                            >Widget theme
+                            <select id="widget-theme">
+                                <option value="default">Default</option>
+                                <option value="dark">Dark</option>
+                                <option value="compact">Compact</option>
+                            </select></label
+                        ><button class="sample">Reload sample ↗</button
+                        ><button class="sample styled">
+                            Try larger nodes ↗
+                        </button>
+                    </div>
+                </div>
+                <p class="demo-guide">
+                    Try the sample: click <strong>Orders API</strong>,
+                    <strong>Orders database</strong>, or
+                    <strong>Fulfillment worker</strong> for controls. Click the
+                    <strong>HTTPS</strong>, <strong>JDBC</strong>, or
+                    <strong>AMQP</strong> connections for protocols and
+                    relationship details.
+                </p>
+                <calm-viewer src="./examples/commerce.calm.json"></calm-viewer>
+            </main>
+            <footer>
+                <span
+                    >Drag to arrange · Click for controls · Click connections
+                    for details</span
+                ><span
+                    >CALM 1.2 · Files stay in your browser · No account
+                    needed</span
+                >
+            </footer>
+        </div>
+        <script type="module" src="./calm-viewer.js"></script>
+        <script type="module">
+            document.querySelector('#widget-theme').onchange = (event) => {
+                document.querySelector('calm-viewer').dataset.theme =
+                    event.target.value;
+            };
+            document.querySelector('.styled').onclick = () =>
+                document
+                    .querySelector('calm-viewer')
+                    .loadSource('./examples/commerce-styled.calm.json');
+            document.querySelector('.sample').onclick = () =>
+                document
+                    .querySelector('calm-viewer')
+                    .loadSource('./examples/commerce.calm.json');
+        </script>
+    </body>
+</html>

@@ -16,6 +16,7 @@ Explore the topics below to get hands-on experience with CALM:
 - [CLI](cli): Learn how to install, navigate, and utilize the CALM CLI to generate, validate, and document architectures, and interact with the CALM Hub.
 - [Validation Server](validation-server): Run a standalone HTTP server for remote CALM architecture validation.
 - [Voice Mode](voice-mode): Enable hands-free interaction with CALM Copilot Chat using voice commands.
+- [Web Viewer](web-viewer): Embed a read-only CALM viewer with local files, remote URLs and interface themes.
 - [VS Code Extension](vscode-extension): Live-validate, visualise, and navigate CALM architectures directly inside your editor.
 
 Let's get started and make the most of CALM’s capabilities!

@@ -63,6 +63,7 @@ const sidebars = {
         },
         'working-with-calm/calm-studio',
         'working-with-calm/vscode-extension',
+        'working-with-calm/web-viewer',
         {
           type: 'category',
           label: 'CALM CLI',

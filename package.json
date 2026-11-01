@@ -16,6 +16,7 @@
         "calm-hub-ui",
         "calm-lab",
         "calm-plugins/vscode",
+        "calm-plugins/web",
         "calm-guard",
         "calm-guard/docs",
         "calm-studio/packages/*",
@@ -54,7 +55,9 @@
         "calm-hub-ui:prod": "npm run build --workspace calm-models && npm run prod --workspace calm-hub-ui",
         "calm-hub:copy-schemas": "node scripts/copy-calm-schemas.mjs calm-hub/target/calm-schemas",
         "commit": "commit",
-        "prepare": "husky"
+        "prepare": "husky",
+        "build:web": "npm run build --workspace calm-plugins/web",
+        "test:web": "npm test --workspace calm-plugins/web"
     },
     "devDependencies": {
         "@commitlint/cli": "^21.2.3",

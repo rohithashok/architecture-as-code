@@ -28,6 +28,7 @@
 - [ ] CALMGuard (`calm-guard/`)
 - [ ] Documentation (`docs/`)
 - [ ] Shared (`shared/`)
+- [ ] Web Viewer (`calm-plugins/web/`)
 - [ ] VS Code Extension (`calm-plugins/vscode/`)
 - [ ] Dependencies
 - [ ] CI/CD

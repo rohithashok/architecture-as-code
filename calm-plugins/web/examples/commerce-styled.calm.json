@@ -1,0 +1,356 @@
+{
+  "$schema": "https://calm.finos.org/release/1.2/meta/calm.json",
+  "nodes": [
+    {
+      "unique-id": "visitor",
+      "node-type": "actor",
+      "name": "Customer",
+      "description": "Explores the storefront and places an order.",
+      "metadata": {
+        "calm-viewer": {
+          "color": "#273c53",
+          "text-color": "#ffffff",
+          "location": {
+            "x": 0,
+            "y": 40,
+            "w": 220,
+            "h": 90
+          }
+        }
+      }
+    },
+    {
+      "unique-id": "store",
+      "node-type": "system",
+      "name": "Commerce platform",
+      "description": "The logical boundary of the commerce system.",
+      "metadata": {
+        "calm-viewer": {
+          "color": "#f4ebd9",
+          "text-color": "#725627",
+          "location": {
+            "x": 120,
+            "y": 440,
+            "w": 270,
+            "h": 110
+          }
+        }
+      }
+    },
+    {
+      "unique-id": "web",
+      "node-type": "webclient",
+      "name": "Storefront",
+      "description": "Browser-based shopping experience.",
+      "metadata": {
+        "calm-viewer": {
+          "color": "#e0f1ed",
+          "text-color": "#205f54",
+          "location": {
+            "x": 330,
+            "y": 40,
+            "w": 240,
+            "h": 100
+          }
+        }
+      }
+    },
+    {
+      "unique-id": "api",
+      "node-type": "service",
+      "name": "Orders API",
+      "description": "Validates and records orders.",
+      "metadata": {
+        "calm-viewer": {
+          "color": "#167b74",
+          "text-color": "#ffffff",
+          "location": {
+            "x": 680,
+            "y": 40,
+            "w": 270,
+            "h": 120
+          }
+        }
+      },
+      "controls": {
+        "access-control": {
+          "description": "Only authenticated customers may submit orders.",
+          "requirements": [
+            {
+              "requirement-url": "urn:example:requirements:authenticated-orders",
+              "config": {
+                "authentication": "required",
+                "allowed-role": "customer"
+              }
+            },
+            {
+              "requirement-url": "urn:example:requirements:authorization-policy",
+              "config-url": "urn:example:config:orders-authorization"
+            }
+          ]
+        },
+        "audit-logging": {
+          "description": "Record order creation events for local audit review.",
+          "requirements": [
+            {
+              "requirement-url": "urn:example:requirements:audit-events",
+              "config": {
+                "events": [
+                  "order.created"
+                ],
+                "include-personal-data": false
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "unique-id": "db",
+      "node-type": "database",
+      "name": "Orders database",
+      "description": "Stores order history locally within the platform.",
+      "metadata": {
+        "calm-viewer": {
+          "color": "#e6e8fa",
+          "text-color": "#494278",
+          "location": {
+            "x": 1050,
+            "y": 10,
+            "w": 250,
+            "h": 100
+          }
+        }
+      },
+      "controls": {
+        "at-rest-encryption": {
+          "description": "Encrypt persisted order records and rotate storage keys.",
+          "requirements": [
+            {
+              "requirement-url": "urn:example:requirements:encrypted-order-storage",
+              "config": {
+                "encryption": "AES-256",
+                "key-rotation-days": 90
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "unique-id": "worker",
+      "node-type": "service",
+      "name": "Fulfillment worker",
+      "description": "Coordinates order fulfillment.",
+      "metadata": {
+        "calm-viewer": {
+          "color": "#e6edf6",
+          "text-color": "#385c87",
+          "location": {
+            "x": 1050,
+            "y": 210,
+            "w": 250,
+            "h": 100
+          }
+        }
+      },
+      "controls": {
+        "retry-policy": {
+          "description": "Retry failed fulfillment jobs without processing an order twice.",
+          "requirements": [
+            {
+              "requirement-url": "urn:example:requirements:idempotent-fulfillment",
+              "config": {
+                "maximum-attempts": 3,
+                "idempotency-key": "order-id",
+                "dead-letter-queue": "fulfillment-failures"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "unique-id": "cluster",
+      "node-type": "network",
+      "name": "Private cluster",
+      "description": "Deployment environment for backend services.",
+      "metadata": {
+        "calm-viewer": {
+          "color": "#f4ebd9",
+          "text-color": "#725627",
+          "location": {
+            "x": 650,
+            "y": 440,
+            "w": 270,
+            "h": 110
+          }
+        }
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "unique-id": "customer-storefront",
+      "relationship-type": {
+        "interacts": {
+          "actor": "visitor",
+          "nodes": [
+            "web"
+          ]
+        }
+      },
+      "description": "Browse the storefront over HTTPS.",
+      "protocol": "HTTPS"
+    },
+    {
+      "unique-id": "web-api",
+      "relationship-type": {
+        "connects": {
+          "source": {
+            "node": "web"
+          },
+          "destination": {
+            "node": "api"
+          }
+        }
+      },
+      "protocol": "HTTPS",
+      "description": "Submit authenticated checkout requests over HTTPS.",
+      "controls": {
+        "encrypted-transport": {
+          "description": "Protect order requests in transit.",
+          "requirements": [
+            {
+              "requirement-url": "urn:example:requirements:encrypted-transport",
+              "config": {
+                "minimum-tls-version": "1.2"
+              }
+            }
+          ]
+        }
+      },
+      "metadata": {
+        "purpose": "Checkout requests",
+        "owner": "Commerce team"
+      }
+    },
+    {
+      "unique-id": "api-db",
+      "relationship-type": {
+        "connects": {
+          "source": {
+            "node": "api"
+          },
+          "destination": {
+            "node": "db"
+          }
+        }
+      },
+      "protocol": "JDBC",
+      "description": "Persist orders through a JDBC connection with encrypted transport.",
+      "controls": {
+        "database-transport": {
+          "description": "Require TLS and verify the database server certificate.",
+          "requirements": [
+            {
+              "requirement-url": "urn:example:requirements:secure-database-connection",
+              "config": {
+                "tls": "required",
+                "verify-server-certificate": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "unique-id": "api-worker",
+      "relationship-type": {
+        "connects": {
+          "source": {
+            "node": "api"
+          },
+          "destination": {
+            "node": "worker"
+          }
+        }
+      },
+      "protocol": "AMQP",
+      "description": "Publish fulfillment jobs over AMQP with delivery acknowledgements.",
+      "controls": {
+        "message-delivery": {
+          "description": "Acknowledge accepted jobs and route failed messages to a dead-letter queue.",
+          "requirements": [
+            {
+              "requirement-url": "urn:example:requirements:reliable-job-delivery",
+              "config": {
+                "acknowledgements": "required",
+                "delivery-mode": "persistent",
+                "dead-letter-queue": "fulfillment-failures"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "unique-id": "composition",
+      "relationship-type": {
+        "composed-of": {
+          "container": "store",
+          "nodes": [
+            "web",
+            "api",
+            "db",
+            "worker"
+          ]
+        }
+      },
+      "description": "Commerce components"
+    },
+    {
+      "unique-id": "deployment",
+      "relationship-type": {
+        "deployed-in": {
+          "container": "cluster",
+          "nodes": [
+            "api",
+            "db",
+            "worker"
+          ]
+        }
+      },
+      "description": "Backend deployment"
+    }
+  ],
+  "flows": [
+    {
+      "unique-id": "place-order",
+      "name": "Place an order",
+      "description": "From browsing to persisted order.",
+      "transitions": [
+        {
+          "relationship-unique-id": "customer-storefront",
+          "sequence-number": 1,
+          "description": "Browse storefront"
+        },
+        {
+          "relationship-unique-id": "web-api",
+          "sequence-number": 2,
+          "description": "Submit order"
+        },
+        {
+          "relationship-unique-id": "api-db",
+          "sequence-number": 3,
+          "description": "Save order"
+        },
+        {
+          "relationship-unique-id": "api-worker",
+          "sequence-number": 4,
+          "description": "Fulfill order"
+        }
+      ]
+    }
+  ]
+}

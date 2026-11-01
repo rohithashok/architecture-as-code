@@ -1,0 +1,38 @@
+{
+    "name": "calm-web-plugin",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "license": "Apache-2.0",
+    "description": "Embeddable read-only CALM architecture viewer",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/calm-viewer.js"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "node scripts/build.mjs",
+        "pretest": "node scripts/generate-validator.mjs",
+        "test": "vitest run",
+        "test:browser": "npm run build && node scripts/test-browser.mjs",
+        "serve": "node scripts/serve.mjs",
+        "lint": "eslint src test/unit scripts",
+        "lint-fix": "eslint src test/unit scripts --fix"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.39.4",
+        "@playwright/test": "^1.62.1",
+        "@vitest/coverage-v8": "^5.0.5",
+        "ajv": "^8.18.0",
+        "calm-schema-1.2": "npm:@finos/calm-schema@1.2.0",
+        "esbuild": "^0.28.2",
+        "eslint": "^9.39.2",
+        "globals": "^16.0.0",
+        "jsdom": "^28.1.0",
+        "vitest": "^5.0.5"
+    }
+}
